@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-type LeadData = { name: string; email: string; phone: string };
 type Inputs = {
   kaufpreis: number;
   wohnungen: number;
@@ -30,33 +29,8 @@ function pct(n: number) {
 }
 
 export default function Calculator() {
-  const [stage, setStage] = useState<"gate" | "form" | "result">("gate");
-  const [lead, setLead] = useState<LeadData>({ name: "", email: "", phone: "" });
+  const [stage, setStage] = useState<"form" | "result">("form");
   const [inputs, setInputs] = useState<Inputs>(DEFAULTS);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function submitLead(e: React.FormEvent) {
-    e.preventDefault();
-    if (!lead.name || !lead.email) {
-      setError("Bitte Name und E-Mail angeben.");
-      return;
-    }
-    setSubmitting(true);
-    setError(null);
-    try {
-      await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "calculator_unlock", ...lead }),
-      });
-    } catch {
-      // Netzwerkfehler blockieren die Nutzung des Rechners nicht.
-    } finally {
-      setSubmitting(false);
-      setStage("form");
-    }
-  }
 
   const nettomiete = inputs.wohnungen * inputs.mieteProEinheit * 12;
   const bewirtschaftungskosten = nettomiete * BEWIRTSCHAFTUNGSKOSTEN_SATZ;
@@ -74,40 +48,12 @@ export default function Calculator() {
     fetch("/api/lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "calculator_result", ...lead, inputs }),
+      body: JSON.stringify({ type: "calculator_result", inputs }),
     }).catch(() => {});
   }
 
   return (
     <div className="card" style={{ maxWidth: 640, margin: "0 auto" }}>
-      {stage === "gate" && (
-        <>
-          <h2 style={{ fontSize: 22, marginBottom: 10 }}>Bevor es losgeht</h2>
-          <p style={{ fontSize: 14.5, color: "var(--ink-soft)" }}>
-            Wir senden Ihnen auf Wunsch eine Zusammenfassung Ihres Rendite-Checks zu und melden uns, falls
-            Ihr Objekt zu unserem Ankaufsprofil passt. Ihre Angaben werden vertraulich behandelt.
-          </p>
-          <form onSubmit={submitLead}>
-            <div className="field">
-              <label htmlFor="name">Name</label>
-              <input id="name" type="text" value={lead.name} onChange={(e) => setLead({ ...lead, name: e.target.value })} required />
-            </div>
-            <div className="field">
-              <label htmlFor="email">E-Mail</label>
-              <input id="email" type="email" value={lead.email} onChange={(e) => setLead({ ...lead, email: e.target.value })} required />
-            </div>
-            <div className="field">
-              <label htmlFor="phone">Telefon (optional)</label>
-              <input id="phone" type="tel" value={lead.phone} onChange={(e) => setLead({ ...lead, phone: e.target.value })} />
-            </div>
-            {error && <p style={{ color: "#b3261e", fontSize: 13.5 }}>{error}</p>}
-            <button type="submit" className="btn btn-gold" disabled={submitting} style={{ width: "100%" }}>
-              {submitting ? "Einen Moment …" : "Weiter zum Rechner"}
-            </button>
-          </form>
-        </>
-      )}
-
       {stage === "form" && (
         <form onSubmit={showResult}>
           <h2 style={{ fontSize: 22, marginBottom: 20 }}>Objektangaben</h2>
@@ -185,8 +131,7 @@ export default function Calculator() {
             ))}
           </div>
           <p style={{ fontSize: 13.5, color: "var(--ink-soft)" }}>
-            Interessiert an einer vertieften Prüfung Ihres Objekts? Wir melden uns bei Ihnen unter{" "}
-            <strong>{lead.email}</strong>, oder schreiben Sie uns direkt über die{" "}
+            Interessiert an einer vertieften Prüfung Ihres Objekts? Schreiben Sie uns direkt über die{" "}
             <a href="/kontakt" style={{ color: "var(--sky-500)", fontWeight: 600 }}>
               Kontaktseite
             </a>
