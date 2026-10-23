@@ -18,10 +18,10 @@ export default function TeamPage() {
 
       <section className="section-tight">
         <div
-          className="container"
-          style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 48, alignItems: "start" }}
+          className="container responsive-grid-2"
+          style={{ "--grid-2-cols": "260px 1fr", gap: 48, alignItems: "start" } as React.CSSProperties}
         >
-          <div>
+          <div style={{ maxWidth: 260 }}>
             <div
               style={{
                 width: "100%",
@@ -67,6 +67,40 @@ export default function TeamPage() {
       </section>
 
       <section className="section-tight" style={{ background: "#fff", borderTop: "1px solid var(--line)" }}>
+        <div className="container">
+          <span className="eyebrow">Werte</span>
+          <h2 style={{ fontSize: 24, marginBottom: 28, maxWidth: 560 }}>
+            Worauf es bei jeder Entscheidung ankommt.
+          </h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 28 }}>
+            {[
+              {
+                t: "Ertragswertbasiert",
+                d: "Entscheidungen stützen sich auf nachvollziehbare Zahlen — Nettomiete, Kapitalisierungssatz, Tragbarkeit — nicht auf Spekulation über künftige Marktbewegungen.",
+              },
+              {
+                t: "Diszipliniert",
+                d: "Jedes Objekt durchläuft dieselbe standardisierte Kalkulation nach bankenüblichem Tragbarkeitsmodell, bevor eine Investitionsentscheidung fällt.",
+              },
+              {
+                t: "Transparent",
+                d: "Kapitalpartner erhalten eine nachvollziehbare Herleitung von Annahmen, Kennzahlen und Risiken — keine Blackbox-Kalkulation.",
+              },
+              {
+                t: "Partnerschaftlich",
+                d: "Ob Eigentümerin, Finanzierungspartner oder Investor: Eine Zusammenarbeit beginnt mit einem offenen Gespräch über die individuelle Ausgangslage.",
+              },
+            ].map((v) => (
+              <div key={v.t} className="card">
+                <h3 style={{ fontSize: 17, marginBottom: 8 }}>{v.t}</h3>
+                <p style={{ fontSize: 14, color: "var(--ink-soft)", marginBottom: 0 }}>{v.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-tight">
         <div className="container">
           <span className="eyebrow">Organisation</span>
           <h2 style={{ fontSize: 24, marginBottom: 28, maxWidth: 560 }}>

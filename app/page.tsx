@@ -20,7 +20,7 @@ export default function Home() {
             geplanten Exit — diszipliniert, ertragswertbasiert, bankenfähig.
           </p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/rechner" className="btn btn-gold">Rendite-Check starten</Link>
+            <Link href="/rechner" className="btn btn-gold">Investment-Analyse starten</Link>
             <Link href="#strategie" className="btn btn-ghost" style={{ borderColor: "rgba(255,255,255,0.35)", color: "#fff" }}>
               Strategie im Detail
             </Link>
@@ -81,7 +81,10 @@ export default function Home() {
 
       {/* WARUM ERTRAGSWERT */}
       <section className="section-tight" style={{ background: "#fff", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
-        <div className="container" style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 56, alignItems: "center" }}>
+        <div
+          className="container responsive-grid-2"
+          style={{ "--grid-2-cols": "1.1fr 1fr", gap: 56, alignItems: "center" } as React.CSSProperties}
+        >
           <div>
             <span className="eyebrow">Warum Ertragswert zählt</span>
             <h2 style={{ fontSize: "clamp(24px, 3vw, 32px)", marginBottom: 18 }}>
@@ -101,7 +104,7 @@ export default function Home() {
             </div>
             <p style={{ fontSize: 13.5, color: "var(--ink-soft)", marginTop: 12, marginBottom: 0 }}>
               Steigt die nachhaltige Nettomiete, steigt bei gleichem Kapitalisierungssatz auch der Ertragswert
-              der Liegenschaft. Teste die Wirkung im Rendite-Check.
+              der Liegenschaft. Teste die Wirkung in der Investment-Analyse.
             </p>
           </div>
         </div>
@@ -129,6 +132,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="section" style={{ background: "#fff", borderTop: "1px solid var(--line)" }}>
+        <div className="container" style={{ maxWidth: 820 }}>
+          <span className="eyebrow">Häufige Fragen</span>
+          <h2 style={{ fontSize: "clamp(24px, 3vw, 32px)", marginBottom: 40 }}>Gut zu wissen.</h2>
+          <div style={{ display: "grid", gap: 14 }}>
+            {[
+              {
+                q: "Was unterscheidet die Value-Add-Strategie von Value Property AG?",
+                a: "Der Fokus liegt auf der aktiven, gezielten Aufwertung bestehender Mehrfamilienhäuser — operativ, baulich und strukturell — statt auf spekulativen Marktbewegungen. Die Wertsteigerung entsteht über die nachhaltige Erhöhung der Nettomieterträge und damit des Ertragswerts.",
+              },
+              {
+                q: "Was zeigt mir die Investment-Analyse auf dieser Website?",
+                a: "Dasselbe Kennzahlengerüst, das Banken für die Tragbarkeitsprüfung und institutionelle Investoren für die Renditebeurteilung von Mehrfamilienhäusern verwenden — unter anderem NOI, ROI, ROE, Cash-on-Cash-Rendite und Ertragswert. Alle Annahmen sind frei editierbar und dienen als Indikation, nicht als Anlageberatung.",
+              },
+              {
+                q: "Wie läuft eine erste Kontaktaufnahme ab?",
+                a: "Sie schreiben uns über das Kontaktformular oder direkt per E-Mail — mit einem Objektvorschlag, einer Finanzierungsidee oder einer Investoren-Anfrage. Wir melden uns in der Regel innerhalb von zwei Werktagen für ein unverbindliches Gespräch.",
+              },
+              {
+                q: "Für wen ist eine Zusammenarbeit mit Value Property AG interessant?",
+                a: "Für Eigentümerinnen und Eigentümer mit Verkaufs- oder Nachfolgesituationen bei Mehrfamilienhäusern ebenso wie für Finanzierungs- und Investitionspartner, die an ertragswertbasierten Value-Add-Opportunitäten in der Schweiz interessiert sind.",
+              },
+            ].map((item) => (
+              <details key={item.q} className="card">
+                <summary style={{ cursor: "pointer", fontWeight: 600, fontSize: 15.5, color: "var(--navy-950)" }}>
+                  {item.q}
+                </summary>
+                <p style={{ fontSize: 14.5, color: "var(--ink-soft)", marginTop: 12, marginBottom: 0 }}>{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="section-tight" style={{ background: "var(--navy-950)", color: "#fff" }}>
         <div className="container" style={{ textAlign: "center" }}>
@@ -136,10 +174,10 @@ export default function Home() {
             Wie viel Potenzial steckt in Ihrem Objekt?
           </h2>
           <p style={{ color: "#c6d1db", maxWidth: 520, margin: "0 auto 28px" }}>
-            Der Rendite-Check gibt in wenigen Minuten eine erste, vereinfachte Einschätzung von Cashflow und
-            Nettorendite.
+            Die Investment-Analyse gibt in wenigen Minuten eine fundierte, bankenstandard-basierte Einschätzung
+            von Cashflow, Rendite und Tragbarkeit.
           </p>
-          <Link href="/rechner" className="btn btn-gold">Rendite-Check starten</Link>
+          <Link href="/rechner" className="btn btn-gold">Investment-Analyse starten</Link>
         </div>
       </section>
     </>

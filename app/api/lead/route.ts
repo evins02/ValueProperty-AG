@@ -1,22 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
-// TODO vor Live-Schaltung: Diese Route speichert Leads aktuell nur im Server-Log.
-// Vercel Serverless Functions haben kein persistentes Dateisystem — für den
-// produktiven Einsatz muss hier ein echter Speicher/Versand angebunden werden, z. B.:
-//   - E-Mail-Benachrichtigung über Resend (https://resend.com) oder Postmark
-//   - Persistente Speicherung über Vercel Postgres, Supabase oder Airtable
-//   - Alternativ: Weiterleitung an ein bestehendes CRM per Webhook
-//
-// Beispiel (Resend), sobald ein API-Key in den Vercel Environment Variables hinterlegt ist:
-//
-// import { Resend } from "resend";
-// const resend = new Resend(process.env.RESEND_API_KEY);
-// await resend.emails.send({
-//   from: "Value Property AG <no-reply@valueproperty.com>",
-//   to: "evinsariaratnam@gmail.com",
-//   subject: `Neuer Lead: ${body.name}`,
-//   text: JSON.stringify(body, null, 2),
-// });
+const TO_EMAIL = "evinsariaratnam@gmail.com";
+
+function labelFor(type: string) {
+  switch (type) {
+    case "contact":
+      return "Kontaktformular";
+    case "calculator_result":
+      return "Investment-Analyse genutzt";
+    default:
+      return "Anfrage";
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,9 +22,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "invalid_payload" }, { status: 400 });
     }
 
-    // Sichtbar in den Vercel Function Logs (Dashboard -> Deployments -> Logs),
-    // bis eine echte Anbindung (siehe TODO oben) konfiguriert ist.
-    console.log("[lead]", new Date().toISOString(), JSON.stringify(body));
+    const { type = "contact", name, email } = body as {
+      type?: string;
+      name?: string;
+      email?: string;
+    };
+
+    const apiKey = process.env.RESEND_API_KEY;
+
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      const lines = Object.entries(body)
+        .filter(([key]) => key !== "type")
+        .map(([key, value]) => `${key}: ${typeof value === "string" ? value : JSON.stringify(value)}`)
+        .join("\n");
+
+      await resend.emails.send({
+        // Solange keine eigene Domain bei Resend verifiziert ist, funktioniert der
+        // gemeinsame Test-Absender nur für Zustellungen an die Resend-Kontoadresse.
+        from: "Value Property AG <onboarding@resend.dev>",
+        to: TO_EMAIL,
+        replyTo: typeof email === "string" && email ? email : undefined,
+        subject: `${labelFor(type)}${name ? ` — ${name}` : ""}`,
+        text: lines,
+      });
+    } else {
+      // Ohne RESEND_API_KEY (Vercel Environment Variable) nur Server-Log, damit das
+      // Formular auch ohne E-Mail-Anbindung nicht fehlschlägt.
+      console.log("[lead] RESEND_API_KEY fehlt — nur geloggt:", new Date().toISOString(), JSON.stringify(body));
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

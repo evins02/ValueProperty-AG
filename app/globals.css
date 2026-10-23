@@ -179,3 +179,38 @@ input[type="range"] {
   .section { padding: 64px 0; }
   .section-tight { padding: 44px 0; }
 }
+
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: var(--grid-2-cols, 1fr 1fr);
+}
+
+@media (max-width: 760px) {
+  .responsive-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.nav-links {
+  display: flex;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.nav-mobile-panel {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .nav-links {
+    display: none;
+  }
+  .nav-toggle {
+    display: inline-flex;
+  }
+  .nav-mobile-panel.is-open {
+    display: flex;
+  }
+}
